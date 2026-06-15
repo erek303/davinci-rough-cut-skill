@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install core dependencies
+        run: python -m pip install -r skill/davinci-rough-cut/requirements-core.txt
+      - name: Compile published scripts
+        run: python -m py_compile skill/davinci-rough-cut/scripts/*.py
+      - name: Remove compile cache
+        run: find skill/davinci-rough-cut -name "__pycache__" -type d -prune -exec rm -rf {} +
+      - name: Check install script syntax
+        run: bash -n install.sh
+      - name: Run offline workflow tests
+        run: python tests/test_offline_workflows.py
+      - name: Smoke-test command help
+        run: |
+          python skill/davinci-rough-cut/scripts/ai_edit_transcript.py --help
+          python skill/davinci-rough-cut/scripts/generate_alignment_xml.py --help
+          python skill/davinci-rough-cut/scripts/generate_davinci_xml.py --help
+          python skill/davinci-rough-cut/scripts/generate_fcpxml.py --help
+          python skill/davinci-rough-cut/scripts/install_deps.py --help
+          python skill/davinci-rough-cut/scripts/mimo_asr.py --help
+          python skill/davinci-rough-cut/scripts/transcribe.py --help
+          python skill/davinci-rough-cut/scripts/volcengine_asr.py --help
+          python skill/davinci-rough-cut/scripts/web_editor.py --help

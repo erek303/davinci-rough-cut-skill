@@ -1,0 +1,4 @@
+interface:
+  display_name: "DaVinci Rough Cut"
+  short_description: "AI rough cuts for DaVinci Resolve"
+  default_prompt: "Use $davinci-rough-cut to turn my long source material into a DaVinci Resolve rough-cut timeline."
